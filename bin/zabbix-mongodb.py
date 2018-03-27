@@ -86,7 +86,7 @@ class MongoDB(object):
         db = MongoClient(self.mongo_host, self.mongo_port)
 
         if self.mongo_user and self.mongo_password:
-            db.authenticate(self.mongo_user, self.mongo_password)
+            db.admin.authenticate(self.mongo_user, self.mongo_password)
 
         dbl = db.local
         coll = dbl['oplog.rs']
@@ -114,15 +114,16 @@ class MongoDB(object):
         db = MongoClient(self.mongo_host, self.mongo_port)
 
         if self.mongo_user and self.mongo_password:
-            db.authenticate(self.mongo_user, self.mongo_password)
+            db.admin.authenticate(self.mongo_user, self.mongo_password)
 
         host_name = socket.gethostname()
+        host_id = socket.gethostbyname(socket.gethostname())
 
         fsync_locked = int(db.is_locked)
 
         config = db.admin.command("replSetGetConfig", 1)
         for i in range(0, len(config['config']['members'])):
-            if host_name in config['config']['members'][i]['host']:
+            if host_name in config['config']['members'][i]['host'] or host_ip in config['config']['members'][i]['host']:
                 priority = config['config']['members'][i]['priority']
                 hidden = int(config['config']['members'][i]['hidden'])
 
