@@ -117,7 +117,7 @@ class MongoDB(object):
             db.admin.authenticate(self.mongo_user, self.mongo_password)
 
         host_name = socket.gethostname()
-        host_id = socket.gethostbyname(socket.gethostname())
+        host_ip = socket.gethostbyname(socket.gethostname())
 
         fsync_locked = int(db.is_locked)
 
