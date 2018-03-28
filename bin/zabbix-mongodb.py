@@ -5,6 +5,7 @@
 # Description: A script to get MongoDB metrics
 # Requires: MongoClient in python
 
+import pymongo
 from pymongo import MongoClient
 from calendar import timegm
 from time import gmtime
@@ -16,8 +17,8 @@ class MongoDB(object):
         self.mongo_host = "127.0.0.1"
         self.mongo_port = 27017
         self.mongo_db = ["admin", ]
-        self.mongo_user = None
-        self.mongo_password = None
+        self.mongo_user = 'monitor'
+        self.mongo_password = 'monitorek'
         self.__conn = None
         self.__dbnames = None
         self.__metrics = []
@@ -88,26 +89,33 @@ class MongoDB(object):
         if self.mongo_user and self.mongo_password:
             db.admin.authenticate(self.mongo_user, self.mongo_password)
 
-        dbl = db.local
-        coll = dbl['oplog.rs']
+        try:
+            rscheck = db.admin.command( { "replSetGetStatus" : 1 } )
+            rscheck = rscheck['ok']
+        except pymongo.errors.OperationFailure: 
+            rscheck = 0
+        
+        if int(rscheck) == 1:
+            dbl = db.local
+            coll = dbl['oplog.rs']
 
-        op_first = (coll.find().sort('$natural', 1).limit(1))
+            op_first = (coll.find().sort('$natural', 1).limit(1))
 
-        while op_first.alive:
-            op_fst = (op_first.next())['ts'].time
+            while op_first.alive:
+                op_fst = (op_first.next())['ts'].time
 
-        op_last = (coll.find().sort('$natural', -1).limit(1))
+            op_last = (coll.find().sort('$natural', -1).limit(1))
 
-        while op_last.alive:
-            op_last_st = op_last[0]['ts']
-            op_lst = (op_last.next())['ts'].time
+            while op_last.alive:
+                op_last_st = op_last[0]['ts']
+                op_lst = (op_last.next())['ts'].time
 
-        status = round(float(op_lst - op_fst), 1)
-        self.addMetrics('mongodb.oplog', status)
+            status = round(float(op_lst - op_fst), 1)
+            self.addMetrics('mongodb.oplog', status)
 
-        currentTime = timegm(gmtime())
-        oplog = int(((str(op_last_st).split('('))[1].split(','))[0])
-        self.addMetrics('mongodb.oplog-sync', (currentTime - oplog))
+            currentTime = timegm(gmtime())
+            oplog = int(((str(op_last_st).split('('))[1].split(','))[0])
+            self.addMetrics('mongodb.oplog-sync', (currentTime - oplog))
 
 
     def getMaintenance(self):
@@ -120,16 +128,23 @@ class MongoDB(object):
         host_ip = socket.gethostbyname(socket.gethostname())
 
         fsync_locked = int(db.is_locked)
+        
+        try:
+            rscheck = db.admin.command( { "replSetGetStatus" : 1 } )
+            rscheck = rscheck['ok']
+        except pymongo.errors.OperationFailure:
+            rscheck = 0
+        
+        if int(rscheck) == 1:
+            config = db.admin.command("replSetGetConfig", 1)
+            for i in range(0, len(config['config']['members'])):
+                if host_name in config['config']['members'][i]['host'] or host_ip in config['config']['members'][i]['host']:
+                    priority = config['config']['members'][i]['priority']
+                    hidden = int(config['config']['members'][i]['hidden'])
 
-        config = db.admin.command("replSetGetConfig", 1)
-        for i in range(0, len(config['config']['members'])):
-            if host_name in config['config']['members'][i]['host'] or host_ip in config['config']['members'][i]['host']:
-                priority = config['config']['members'][i]['priority']
-                hidden = int(config['config']['members'][i]['hidden'])
-
-        self.addMetrics('mongodb.fsync-locked', fsync_locked)
-        self.addMetrics('mongodb.priority', priority)
-        self.addMetrics('mongodb.hidden', hidden)
+            self.addMetrics('mongodb.fsync-locked', fsync_locked)
+            self.addMetrics('mongodb.priority', priority)
+            self.addMetrics('mongodb.hidden', hidden)
 
 
     # Get Server Status
