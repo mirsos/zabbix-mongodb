@@ -2969,10 +2969,10 @@ and {Template MongoDB:mongodb.priority.last()}=1</expression>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template MongoDB:mongodb.oplog.last()}&lt;259200</expression>
+            <expression>{Template MongoDB:mongodb.oplog.last()}&lt;7200</expression>
             <recovery_mode>1</recovery_mode>
-            <recovery_expression>{Template MongoDB:mongodb.oplog.last()}&gt;259320</recovery_expression>
-            <name>MongoDB Oplog length 3 days on {HOST.NAME}</name>
+            <recovery_expression>{Template MongoDB:mongodb.oplog.last()}&gt;7201</recovery_expression>
+            <name>MongoDB Oplog length 2 hours on {HOST.NAME}</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -2985,10 +2985,10 @@ and {Template MongoDB:mongodb.priority.last()}=1</expression>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template MongoDB:mongodb.oplog.last()}&lt;604800 and not {Template MongoDB:mongodb.oplog.last()}&lt;259200</expression>
+            <expression>{Template MongoDB:mongodb.oplog.last()}&lt;28800 and not {Template MongoDB:mongodb.oplog.last()}&lt;7200</expression>
             <recovery_mode>1</recovery_mode>
-            <recovery_expression>{Template MongoDB:mongodb.oplog.last()}&gt;604920</recovery_expression>
-            <name>MongoDB Oplog length 7 days on {HOST.NAME}</name>
+            <recovery_expression>{Template MongoDB:mongodb.oplog.last()}&gt;28801</recovery_expression>
+            <name>MongoDB Oplog length 8 hours on {HOST.NAME}</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
