@@ -17,8 +17,8 @@ class MongoDB(object):
         self.mongo_host = "127.0.0.1"
         self.mongo_port = 27017
         self.mongo_db = ["admin", ]
-        self.mongo_user = 'monitor'
-        self.mongo_password = 'monitorek'
+        self.mongo_user = None
+        self.mongo_password = None
         self.__conn = None
         self.__dbnames = None
         self.__metrics = []
@@ -188,9 +188,9 @@ class MongoDB(object):
         self.addMetrics('mongodb.page.faults', ss['extra_info']['page_faults'])
 
         #wired tiger
-        self.addMetrics('mongodb.used-cache', ss['wiredTiger']['cache']["bytes currently in the cache"])
-        self.addMetrics('mongodb.total-cache', ss['wiredTiger']['cache']["maximum bytes configured"])
-        self.addMetrics('mongodb.dirty-cache', ss['wiredTiger']['cache']["tracked dirty bytes in the cache"])
+        self.addMetrics('mongodb.used-cache', int(ss['wiredTiger']['cache']["bytes currently in the cache"]))
+        self.addMetrics('mongodb.total-cache', int(ss['wiredTiger']['cache']["maximum bytes configured"]))
+        self.addMetrics('mongodb.dirty-cache', int(ss['wiredTiger']['cache']["tracked dirty bytes in the cache"]))
 
         # global lock
         lockTotalTime = ss['globalLock']['totalTime']
