@@ -17,8 +17,8 @@ class MongoDB(object):
         self.mongo_host = "127.0.0.1"
         self.mongo_port = 27017
         self.mongo_db = ["admin", ]
-        self.mongo_user = "monitor"
-        self.mongo_password = "monitorek"
+        self.mongo_user = None
+        self.mongo_password = None
         self.__conn = None
         self.__dbnames = None
         self.__metrics = []
