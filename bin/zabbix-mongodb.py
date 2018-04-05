@@ -17,8 +17,8 @@ class MongoDB(object):
         self.mongo_host = "127.0.0.1"
         self.mongo_port = 27017
         self.mongo_db = ["admin", ]
-        self.mongo_user = None
-        self.mongo_password = None
+        self.mongo_user = "monitor"
+        self.mongo_password = "monitorek"
         self.__conn = None
         self.__dbnames = None
         self.__metrics = []
@@ -43,8 +43,8 @@ class MongoDB(object):
         metrics = self.__metrics
         for m in metrics:
             zabbix_item_key = str(m['key'])
-            zabbix_item_value = str(m['value'])
-            print '- ' + zabbix_item_key + ' ' + zabbix_item_value
+            zabbix_item_value = str(m['value']).replace("\'","\"")
+            print '- ' + zabbix_item_key + ' ' + zabbix_item_value.replace(" ", "")
 
     # Get a list of DB names
     def getDBNames(self):
@@ -78,7 +78,7 @@ class MongoDB(object):
         if DBNames is not None:
             for db in DBNames:
                 dict = {}
-                dict['{#MONGODBNAME}'] = db
+                dict['{#MONGODBNAME}'] = str(db)
                 DBList.append(dict)
             dictLLD['value'] = {"data": DBList}
         self.__metrics.insert(0, dictLLD)
@@ -156,7 +156,7 @@ class MongoDB(object):
             db.authenticate(self.mongo_user, self.mongo_password)
         ss = db.command('serverStatus')
 
-        #print ss
+##        print ss
 
         # db info
         self.addMetrics('mongodb.version', ss['version'])
@@ -184,14 +184,57 @@ class MongoDB(object):
         for k, v in ss['network'].items():
             self.addMetrics('mongodb.network.' + k, v)
 
+
         # extra info
         self.addMetrics('mongodb.page.faults', ss['extra_info']['page_faults'])
 
-        #wired tiger
-        self.addMetrics('mongodb.used-cache', int(ss['wiredTiger']['cache']["bytes currently in the cache"]))
-        self.addMetrics('mongodb.total-cache', int(ss['wiredTiger']['cache']["maximum bytes configured"]))
-        self.addMetrics('mongodb.dirty-cache', int(ss['wiredTiger']['cache']["tracked dirty bytes in the cache"]))
+        ## wired tiger
+ 
+        # block-manager
+        self.addMetrics('mongodb.block-manager.blocks-pre-loaded', int(ss['wiredTiger']['block-manager']["blocks pre-loaded"]))
+        self.addMetrics('mongodb.block-manager.blocks-read', int(ss['wiredTiger']['block-manager']["blocks read"]))
+        self.addMetrics('mongodb.block-manager.blocks-written', int(ss['wiredTiger']['block-manager']["blocks written"]))
+        self.addMetrics('mongodb.block-manager.bytes-read', int(ss['wiredTiger']['block-manager']["bytes read"]))
+        self.addMetrics('mongodb.block-manager.bytes-written', int(ss['wiredTiger']['block-manager']["bytes written"]))
+        self.addMetrics('mongodb.block-manager.bytes-written-for-checkpoint', int(ss['wiredTiger']['block-manager']["bytes written for checkpoint"]))
 
+        # cache
+        for k, v in ss['wiredTiger']['cache'].items():
+            self.addMetrics('mongodb.cache.' + k.replace(" ", "-"), int(v))
+
+        # connections
+        for k, v in ss['wiredTiger']['connection'].items():
+            self.addMetrics('mongodb.connection.' + k.replace(" ", "-"),int(v))
+
+        # cursor 
+        for k, v in ss['wiredTiger']['cursor'].items():
+            self.addMetrics('mongodb.cursor.' + k.replace(" ", "-"),int(v))
+
+        # data-handle
+        for k, v in ss['wiredTiger']['data-handle'].items():
+            self.addMetrics('mongodb.data-handle.' + k.replace(" ", "-"),int(v))
+
+        # lock
+        for k, v in ss['wiredTiger']['lock'].items():
+            self.addMetrics('mongodb.lock.' + k.replace(" ", "-"),int(v))
+
+        # log
+        for k, v in ss['wiredTiger']['log'].items():
+            self.addMetrics('mongodb.log.' + k.replace(" ", "-"),int(v))
+
+        # reconciliation
+        for k, v in ss['wiredTiger']['reconciliation'].items():
+            self.addMetrics('mongodb.reconciliation.' + k.replace(" ", "-"),int(v))
+
+        # session
+        self.addMetrics('mongodb.session.open-cursor-count', int(ss['wiredTiger']['session']["open cursor count"]))
+        self.addMetrics('mongodb.session.open-session-count', int(ss['wiredTiger']['session']["open session count"]))
+
+        # transaction
+        for k, v in ss['wiredTiger']['transaction'].items():
+            self.addMetrics('mongodb.transaction.' + k.replace(" ", "-"),int(v))
+
+       
         # global lock
         lockTotalTime = ss['globalLock']['totalTime']
         self.addMetrics('mongodb.globalLock.totalTime', lockTotalTime)
