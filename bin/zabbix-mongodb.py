@@ -232,9 +232,10 @@ class MongoDB(object):
 
         # transaction
         for k, v in ss['wiredTiger']['transaction'].items():
-            self.addMetrics('mongodb.transaction.' + k.replace(" ", "-"),int(v))
+            self.addMetrics('mongodb.transaction.' + k.replace(" ", "-").replace("-(msecs)",""),int(v))
 
-       
+        ## wt end
+
         # global lock
         lockTotalTime = ss['globalLock']['totalTime']
         self.addMetrics('mongodb.globalLock.totalTime', lockTotalTime)
@@ -242,6 +243,17 @@ class MongoDB(object):
             self.addMetrics('mongodb.globalLock.currentQueue.' + k, v)
         for k, v in ss['globalLock']['activeClients'].items():
             self.addMetrics('mongodb.globalLock.activeClients.' + k, v)
+
+        ## metrics
+        
+        # queryExecutor
+        self.addMetrics('mongodb.metrics.queryExecutor.scanned', int(ss['metrics']['queryExecutor']["scanned"]))
+        self.addMetrics('mongodb.metrics.queryExecutor.scannedObjects', int(ss['metrics']['queryExecutor']["scannedObjects"]))
+        #for k, v in ss['metrics']['queryExecutor'].items():
+        #    self.addMetrics('mongodb.queryExecutor.' + k.replace(" ", "-"),int(v))
+
+        # record
+        self.addMetrics('mongodb.metrics.record.moves', int(ss['metrics']['record']["moves"]))
 
     # Get DB stats for each DB
     def getDBStatsMetrics(self):
