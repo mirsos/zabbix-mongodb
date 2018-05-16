@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>3.4</version>
-    <date>2018-04-10T13:14:50Z</date>
+    <date>2018-05-16T06:11:26Z</date>
     <groups>
         <group>
             <name>Templates App</name>
@@ -12,7 +12,7 @@
             <template>Template MongoDB</template>
             <name>Template MongoDB</name>
             <description>Template dodany z: &#13;
-https://github.com/omni-lchen/zabbix-mongodb&#13;
+https://github.com/mirsos/zabbix-mongodb&#13;
 &#13;
 misosna</description>
             <groups>
@@ -3107,7 +3107,7 @@ The amount of mapped memory, in megabytes (MB), including the memory used for jo
                             <snmp_oid/>
                             <key>mongodb.stats.avgObjSize[{#MONGODBNAME}]</key>
                             <delay>0</delay>
-                            <history>28d</history>
+                            <history>1w</history>
                             <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
@@ -3149,7 +3149,7 @@ The amount of mapped memory, in megabytes (MB), including the memory used for jo
                             <snmp_oid/>
                             <key>mongodb.stats.collections[{#MONGODBNAME}]</key>
                             <delay>0</delay>
-                            <history>28d</history>
+                            <history>1w</history>
                             <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
@@ -3191,7 +3191,7 @@ The amount of mapped memory, in megabytes (MB), including the memory used for jo
                             <snmp_oid/>
                             <key>mongodb.stats.dataSize[{#MONGODBNAME}]</key>
                             <delay>0</delay>
-                            <history>28d</history>
+                            <history>1w</history>
                             <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
@@ -3233,7 +3233,7 @@ The amount of mapped memory, in megabytes (MB), including the memory used for jo
                             <snmp_oid/>
                             <key>mongodb.stats.fileSize[{#MONGODBNAME}]</key>
                             <delay>0</delay>
-                            <history>28d</history>
+                            <history>1w</history>
                             <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
@@ -3277,7 +3277,7 @@ The scale argument affects this value. Only present when using the mmapv1 storag
                             <snmp_oid/>
                             <key>mongodb.stats.indexes[{#MONGODBNAME}]</key>
                             <delay>0</delay>
-                            <history>28d</history>
+                            <history>1w</history>
                             <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
@@ -3319,7 +3319,7 @@ The scale argument affects this value. Only present when using the mmapv1 storag
                             <snmp_oid/>
                             <key>mongodb.stats.indexSize[{#MONGODBNAME}]</key>
                             <delay>0</delay>
-                            <history>28d</history>
+                            <history>1w</history>
                             <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
@@ -3361,7 +3361,7 @@ The scale argument affects this value. Only present when using the mmapv1 storag
                             <snmp_oid/>
                             <key>mongodb.stats.nsSizeMB[{#MONGODBNAME}]</key>
                             <delay>0</delay>
-                            <history>28d</history>
+                            <history>1w</history>
                             <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
@@ -3410,7 +3410,7 @@ Only present when using the mmapv1 storage engine.</description>
                             <snmp_oid/>
                             <key>mongodb.stats.numExtents[{#MONGODBNAME}]</key>
                             <delay>0</delay>
-                            <history>28d</history>
+                            <history>1w</history>
                             <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
@@ -3452,7 +3452,7 @@ Only present when using the mmapv1 storage engine.</description>
                             <snmp_oid/>
                             <key>mongodb.stats.objects[{#MONGODBNAME}]</key>
                             <delay>0</delay>
-                            <history>28d</history>
+                            <history>1w</history>
                             <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
@@ -3494,7 +3494,7 @@ Only present when using the mmapv1 storage engine.</description>
                             <snmp_oid/>
                             <key>mongodb.stats.ok[{#MONGODBNAME}]</key>
                             <delay>0</delay>
-                            <history>28d</history>
+                            <history>1w</history>
                             <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
@@ -3538,7 +3538,7 @@ Only present when using the mmapv1 storage engine.</description>
                             <snmp_oid/>
                             <key>mongodb.stats.storageSize[{#MONGODBNAME}]</key>
                             <delay>0</delay>
-                            <history>28d</history>
+                            <history>1w</history>
                             <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
@@ -3789,6 +3789,136 @@ Only present when using the mmapv1 storage engine.</description>
                                     <item>
                                         <host>Template MongoDB</host>
                                         <key>mongodb.stats.objects[{#MONGODBNAME}]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
+                    <host_prototypes/>
+                    <jmx_endpoint/>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>MongoDB lag discovery</name>
+                    <type>2</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>mongodb.lag.discovery</key>
+                    <delay>0</delay>
+                    <status>0</status>
+                    <allowed_hosts/>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <filter>
+                        <evaltype>0</evaltype>
+                        <formula/>
+                        <conditions/>
+                    </filter>
+                    <lifetime>1w</lifetime>
+                    <description/>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>MongoDB::replication lag {#MONGODBSLAVE}</name>
+                            <type>2</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>mongodb.replication.lag.[{#MONGODBSLAVE}]</key>
+                            <delay>0</delay>
+                            <history>1w</history>
+                            <trends>365d</trends>
+                            <status>0</status>
+                            <value_type>3</value_type>
+                            <allowed_hosts/>
+                            <units>s</units>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>MongoDB</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing/>
+                            <jmx_endpoint/>
+                            <application_prototypes/>
+                            <master_item_prototype/>
+                        </item_prototype>
+                    </item_prototypes>
+                    <trigger_prototypes>
+                        <trigger_prototype>
+                            <expression>{Template MongoDB:mongodb.replication.lag.[{#MONGODBSLAVE}].last()}&gt;600</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>mongodb.replication.lag.[{#MONGODBSLAVE}]</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
+                            <url/>
+                            <status>0</status>
+                            <priority>3</priority>
+                            <description/>
+                            <type>0</type>
+                            <manual_close>0</manual_close>
+                            <dependencies/>
+                            <tags/>
+                        </trigger_prototype>
+                    </trigger_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <name>MongoDB::replication lag {#MONGODBSLAVE}</name>
+                            <width>900</width>
+                            <height>200</height>
+                            <yaxismin>0.0000</yaxismin>
+                            <yaxismax>100.0000</yaxismax>
+                            <show_work_period>1</show_work_period>
+                            <show_triggers>1</show_triggers>
+                            <type>0</type>
+                            <show_legend>1</show_legend>
+                            <show_3d>0</show_3d>
+                            <percent_left>0.0000</percent_left>
+                            <percent_right>0.0000</percent_right>
+                            <ymin_type_1>0</ymin_type_1>
+                            <ymax_type_1>0</ymax_type_1>
+                            <ymin_item_1>0</ymin_item_1>
+                            <ymax_item_1>0</ymax_item_1>
+                            <graph_items>
+                                <graph_item>
+                                    <sortorder>0</sortorder>
+                                    <drawtype>0</drawtype>
+                                    <color>1A7C11</color>
+                                    <yaxisside>0</yaxisside>
+                                    <calc_fnc>2</calc_fnc>
+                                    <type>0</type>
+                                    <item>
+                                        <host>Template MongoDB</host>
+                                        <key>mongodb.replication.lag.[{#MONGODBSLAVE}]</key>
                                     </item>
                                 </graph_item>
                             </graph_items>

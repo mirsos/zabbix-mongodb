@@ -17,8 +17,8 @@ class MongoDB(object):
         self.mongo_host = "127.0.0.1"
         self.mongo_port = 27017
         self.mongo_db = ["admin", ]
-        self.mongo_user = None
-        self.mongo_password = None
+        self.mongo_user = ""
+        self.mongo_password = ""
         self.__conn = None
         self.__dbnames = None
         self.__metrics = []
@@ -83,6 +83,39 @@ class MongoDB(object):
             dictLLD['value'] = {"data": DBList}
         self.__metrics.insert(0, dictLLD)
 
+    # Print slaves list, to used for mongo discovery lag replication
+    def getMongoDBslaves(self):
+        db = MongoClient(self.mongo_host, self.mongo_port)
+
+        if self.mongo_user and self.mongo_password:
+            db.admin.authenticate(self.mongo_user, self.mongo_password)
+        
+        master = db.admin.command('isMaster')['ismaster']
+        if master:
+ 
+            try:
+                rscheck = db.admin.command( { "replSetGetStatus" : 1 } )
+                rscheck = rscheck['ok']
+            except pymongo.errors.OperationFailure: 
+                rscheck = 0
+        
+            if int(rscheck) == 1:
+                db_stats = db.admin.command({'replSetGetStatus'  :1})
+        
+                slaves = {}
+                slaves_list = []
+                slaves['key'] = 'mongodb.lag.discovery'
+                slaves['value'] = {"data": slaves_list}
+
+                for key in db_stats['members']:
+                    if key['stateStr'] == 'SECONDARY':
+                        dict = {}
+                        dict['{#MONGODBSLAVE}'] = str(key['name'])
+                        slaves_list.append(dict)
+                    slaves['value'] = {"data": slaves_list}
+                self.__metrics.insert(0, slaves)
+
+    
     def getOplog(self):
         db = MongoClient(self.mongo_host, self.mongo_port)
 
@@ -105,7 +138,7 @@ class MongoDB(object):
                 op_fst = (op_first.next())['ts'].time
 
             op_last = (coll.find().sort('$natural', -1).limit(1))
-
+            
             while op_last.alive:
                 op_last_st = op_last[0]['ts']
                 op_lst = (op_last.next())['ts'].time
@@ -116,6 +149,26 @@ class MongoDB(object):
             currentTime = timegm(gmtime())
             oplog = int(((str(op_last_st).split('('))[1].split(','))[0])
             self.addMetrics('mongodb.oplog-sync', (currentTime - oplog))
+
+            #count lag for all SLAVES
+            master = db.admin.command('isMaster')['ismaster']
+            if master:
+                db_stats = db.admin.command({'replSetGetStatus'  :1})
+
+                primary_optime = 0
+                secondary_optime = 0
+                slaves = {}
+
+                for key in db_stats['members']:
+                    if key['stateStr'] == 'SECONDARY':
+                        slaves[key['name']] = key['optimeDate']
+                    if key['stateStr'] == 'PRIMARY':
+                        primary_optime = key['optimeDate']
+            
+                for key in slaves:
+                    secondary_optime = slaves[key]
+                    seconds_lag = (primary_optime - secondary_optime ).total_seconds()
+                    self.addMetrics('mongodb.replication.lag.[%s]' % key, (int(seconds_lag)))
 
 
     def getMaintenance(self):
@@ -156,7 +209,6 @@ class MongoDB(object):
             db.authenticate(self.mongo_user, self.mongo_password)
         ss = db.command('serverStatus')
 
-##        print ss
 
         # db info
         self.addMetrics('mongodb.version', ss['version'])
@@ -249,8 +301,6 @@ class MongoDB(object):
         # queryExecutor
         self.addMetrics('mongodb.metrics.queryExecutor.scanned', int(ss['metrics']['queryExecutor']["scanned"]))
         self.addMetrics('mongodb.metrics.queryExecutor.scannedObjects', int(ss['metrics']['queryExecutor']["scannedObjects"]))
-        #for k, v in ss['metrics']['queryExecutor'].items():
-        #    self.addMetrics('mongodb.queryExecutor.' + k.replace(" ", "-"),int(v))
 
         # record
         self.addMetrics('mongodb.metrics.record.moves', int(ss['metrics']['record']["moves"]))
@@ -278,6 +328,7 @@ class MongoDB(object):
 if __name__ == '__main__':
     MongoDB = MongoDB()
     MongoDB.getDBNames()
+    MongoDB.getMongoDBslaves()
     MongoDB.getMongoDBLLD()
     MongoDB.getOplog()
     MongoDB.getMaintenance()
