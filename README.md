@@ -12,7 +12,6 @@ Note:
 The following metrics are collected on mongodb version 3.0 by using python mongodb client, and then sent by zabbix sender.
 
 **Server Stats**
-*Repliation*
 - mongodb.ismaster
 - mongodb.oplog
 - mongodb.oplog-sync
@@ -20,7 +19,6 @@ The following metrics are collected on mongodb version 3.0 by using python mongo
 - mongodb.fsync-locked
 - mongodb.priority
 - mongodb.hidden
-
 - mongodb.version
 - mongodb.storageEngine
 - mongodb.uptime
