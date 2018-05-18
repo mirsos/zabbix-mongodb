@@ -12,13 +12,6 @@ Note:
 The following metrics are collected on mongodb version 3.0 by using python mongodb client, and then sent by zabbix sender.
 
 **Server Stats**
-- mongodb.ismaster
-- mongodb.oplog
-- mongodb.oplog-sync
-- mongodb.replication.lag
-- mongodb.fsync-locked
-- mongodb.priority
-- mongodb.hidden
 - mongodb.version
 - mongodb.storageEngine
 - mongodb.uptime
@@ -248,6 +241,15 @@ The following metrics are collected on mongodb version 3.0 by using python mongo
 - mongodb.metrics.queryExecutor.scanned
 - mongodb.metrics.queryExecutor.scannedObjects
 - mongodb.metrics.record.moves
+
+**Replication Stats**
+- mongodb.ismaster
+- mongodb.oplog
+- mongodb.oplog-sync
+- mongodb.replication.lag.[name]
+- mongodb.fsync-locked
+- mongodb.priority
+- mongodb.hidden
 
 **DB Stats**
 - mongodb.stats.storageSize[db]
