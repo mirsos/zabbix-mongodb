@@ -236,6 +236,15 @@ class MongoDB(object):
         for k, v in ss['network'].items():
             self.addMetrics('mongodb.network.' + k, v)
 
+        # tcmalloc
+        for k, v in ss['tcmalloc']['generic'].items():
+            self.addMetrics('mongodb.tcmalloc.' + k,v)
+
+        for k, v in ss['tcmalloc']['tcmalloc'].items():
+            if k == "formattedString":
+                self.addMetrics('mongodb.tcmalloc.' + k,0)
+            else:
+                self.addMetrics('mongodb.tcmalloc.' + k,v)
 
         # extra info
         self.addMetrics('mongodb.page.faults', ss['extra_info']['page_faults'])
