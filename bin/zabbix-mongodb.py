@@ -225,7 +225,7 @@ class MongoDB(object):
             self.addMetrics('mongodb.operation.' + k, v)
 
         # memory
-        for k in ['resident', 'virtual', 'mapped', 'mappedWithJournal']:
+        for k in ['resident', 'virtual']:
             self.addMetrics('mongodb.memory.' + k, ss['mem'][k])
 
         # connections
