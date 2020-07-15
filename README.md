@@ -1,5 +1,7 @@
 # Zabbix-MongoDB
 
+MongoDB 3.6, 4.0, 4.2 
+
 **Installation**
 
 1. Import the mongodb template to zabbix and link it to the zabbix mongodb host.
@@ -9,7 +11,7 @@
 Note:
 - Zabbix sender uses zabbix agent configuration to send the metrics, please check the hostname is set in the zabbix agent config /etc/zabbix/zabbix_agentd.conf, by default the hostname may be commented out.
 
-The following metrics are collected on mongodb version 3.0 by using python mongodb client, and then sent by zabbix sender.
+The following metrics are collected on mongodb by using python mongodb client, and then sent by zabbix sender.
 
 **Server Stats**
 - mongodb.version
