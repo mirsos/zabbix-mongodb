@@ -31,8 +31,6 @@ The following metrics are collected on mongodb by using python mongodb client, a
 - mongodb.operation.delete
 - mongodb.memory.resident
 - mongodb.memory.virtual
-- mongodb.memory.mapped
-- mongodb.memory.mappedWithJournal
 - mongodb.connection.current
 - mongodb.connection.available
 - mongodb.connection.totalCreated
